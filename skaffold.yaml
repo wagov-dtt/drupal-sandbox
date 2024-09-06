@@ -2,7 +2,13 @@ apiVersion: skaffold/v4beta11
 kind: Config
 build:
   artifacts:
-  - image: drupal
+  - image: drupal-local
 manifests:
   rawYaml:
   - k8s.yaml
+deploy:
+  kubectl:
+    hooks:
+      before:
+      - host:
+          command: ["sh", "-c", "kubectl get secret mysql-secret || kubectl create secret generic mysql-secret --from-literal=mysql-password=$(openssl rand -base64 20)"]
